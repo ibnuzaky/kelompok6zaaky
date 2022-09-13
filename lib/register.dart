@@ -125,7 +125,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                       Text(
                         'Term & Condition',
-                        style: regular16pt.copyWith(color: primaryBlue),
+                        style: regular16pt.copyWith(color: primary_button),
                       )
                     ],
                   )
