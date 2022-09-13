@@ -1,4 +1,4 @@
-package com.example.kelompok6
+package com.example.aplikasikantiin
 
 import io.flutter.embedding.android.FlutterActivity
 

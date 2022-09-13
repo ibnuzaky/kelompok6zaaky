@@ -1,115 +1,148 @@
-import 'package:flutter/material.dart';
+  // ignore_for_file: use_key_in_widget_constructors, prefer_final_fields, prefer_const_constructors, avoid_function_literals_in_foreach_calls
 
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
-    );
-  }
-}
+    import 'package:flutter/material.dart';
+    
+    import 'data.dart';
+    
+    void main() => runApp(MyApp());
+    
+    class MyApp extends StatelessWidget {
+      @override
+      Widget build(BuildContext context) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          home: LatihanPencarian(),
+        );
+      }
+    }
+    
+    class LatihanPencarian extends StatefulWidget {
+      @override
+      _LatihanPencarianState createState() => _LatihanPencarianState();
+    }
+    
+    class _LatihanPencarianState extends State<LatihanPencarian> {
+    
+      //untuk mengontroll textfield saat ada perubahan
+      TextEditingController _controllerSearch = TextEditingController();
+    
+      //data bertipe widget ini mulanya kita buat text.
+      //tapi saat ada perubahan data ini akan berubah menjadi form dan sebalikanya menjadi text
+      Widget? searchTextField = Text("List Users");
+    
+      //jika false maka tampilkan icon pencarian
+      //jika true maka tampilkan icon panah dan close
+      bool search = false;
+      Color _bgColor = Colors.green;
+      List list = [];
+    
+      @override
+      void initState() {
+        super.initState();
+        //saat file ini dijalankan pertama kali
+        //maka data list akan diisi dengan data dari data.dart
+        list.addAll(items);
+      }
+    
+      @override
+      Widget build(BuildContext context) {
+        return Scaffold(
+          appBar: AppBar(
+            backgroundColor: _bgColor,
+            //title mulanya adalah text
+            title: searchTextField,
+            actions: <Widget>[
+              //jika search bernilai false maka tampilkan icon search
+              //jika search bernilai true maka tampilkan icon close
+              (search == false)
+                  ? IconButton(
+                      icon: Icon(Icons.search),
+                      onPressed: () {
+                        setState(() {
+                          searchTextField = appSearch(context); 
+                          _bgColor = Colors.white;
+                          search = true;
+                        });
+                      })
+                  : IconButton(
+                      icon: Icon(
+                        Icons.close,
+                        color: Colors.black,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          list.clear();
+                          list.addAll(items);
+                          _controllerSearch.clear();
+                        });
+                      })
+            ],
+          ),
+          body: ListView.builder(
+            itemCount: list.length,
+            itemBuilder: (context, int index) {
+              return ListTile(
+                title: Text(
+                  list[index],
+                  style: TextStyle(fontSize: 18),
+                ),
+              );
+            },
+          ),
+        );
+      }
+    
+      //saat icon search dijalankan maka widget ini akan dijalankan
+      //widget ini berupa form.
+      Widget appSearch(BuildContext context) {
+        return TextField(
+          controller: _controllerSearch,
+          style: TextStyle(color: Colors.black, fontSize: 18),
+          decoration: InputDecoration(
+              icon: IconButton(
+                  icon: Icon(
+                    Icons.arrow_back,
+                    color: Colors.black,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      searchTextField = Text("List Users");
+                      search = false;
+                      _bgColor = Colors.green;
+                      _controllerSearch.clear();
+                      list.clear();
+                      list.addAll(items);
+                    });
+                  }),
+              hintText: "Search",
+              hintStyle: TextStyle(color: Colors.grey)),
+          // setiap ada perubahan, jalankan fungsi _searchName
+          onChanged: (name) {
+            _searchName(name);
+          },
+        );
+      }
+    
+      //fungsi ini akan dijalankan setiap kalian typing/mengetik
+      //fungsi ini akan mencari nama sesuai yang diketikkan
+      _searchName(String name) {
+        if (name.isNotEmpty) {
+          setState(() {
+            list.clear();
+            //melakukan perulangan/looping
+            items.forEach((item) {
+              //jika list data ada yang mengandung susunan huruf yang dicari
+              //maka masukan ke dalam data list
+              if (item.toLowerCase().contains(name.toLowerCase())) {
+                list.add(item);
+              }
+            });
+          });
+        } else {
+          setState(() {
+            list.clear();
+            list.addAll(items);
+          });
+        }
+      }
+    }
